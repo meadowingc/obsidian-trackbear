@@ -17,11 +17,6 @@ export class TrackBearClient {
 		} = {}
 	): Promise<T> {
 		const url = `${this.baseUrl}${endpoint}`;
-		console.log('TrackBear API Request:', {
-			url,
-			method: options.method || 'GET',
-			body: options.body
-		});
 
 		try {
 			const response = await requestUrl({
@@ -34,11 +29,6 @@ export class TrackBearClient {
 				},
 				body: options.body,
 				throw: false, // Don't throw on non-2xx status codes
-			});
-
-			console.log('TrackBear API Response:', {
-				status: response.status,
-				json: response.json
 			});
 
 			const data: any = response.json;
