@@ -98,10 +98,6 @@ function main() {
     console.error(`Tag '${version}' already exists on 'origin'.`);
     process.exit(1);
   }
-  if (remoteExists("github") && remoteTagExists("github", version)) {
-    console.error(`Tag '${version}' already exists on 'github'.`);
-    process.exit(1);
-  }
 
   ensureCleanWorkingTree();
 
@@ -110,13 +106,6 @@ function main() {
 
   console.log(`Pushing tag ${version} to 'origin' ...`);
   run("git", ["push", "origin", version]);
-
-  if (remoteExists("github")) {
-    console.log(`'github' remote detected. Pushing tag ${version} to 'github' ...`);
-    run("git", ["push", "github", version]);
-  } else {
-    console.log("No 'github' remote found. If your GitHub repo is a mirror, ensure it syncs tags.");
-  }
 
   console.log("\nDone. GitHub Actions will build and publish the release with assets for BRAT.");
 }
