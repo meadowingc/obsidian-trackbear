@@ -1,7 +1,7 @@
 import { App, Notice, TFile } from 'obsidian';
 import { TrackBearSettings } from '../settings';
 import { TrackBearClient } from '../api/trackbear';
-import { countWords } from '../utils/wordCount';
+import { getWordCount } from '../utils/wordCount';
 import { parseDateFromFilename, getTodayDate } from '../utils/dateUtils';
 import { getProjectIdFromFrontmatter } from '../utils/frontmatter';
 
@@ -24,7 +24,7 @@ export async function syncCurrentNote(
 
 	// Get file content and count words
 	const content = await app.vault.read(activeFile);
-	const wordCount = countWords(content);
+	const wordCount = getWordCount(app, activeFile);
 
 	// Determine if it's a journal note or story note
 	const isJournalNote = settings.enableJournalTracking &&
