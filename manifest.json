@@ -1,11 +1,10 @@
 {
-	"id": "sample-plugin",
-	"name": "Sample Plugin",
+	"id": "obsidian-trackbear-sync",
+	"name": "TrackBear Sync",
 	"version": "1.0.0",
 	"minAppVersion": "0.15.0",
-	"description": "Demonstrates some of the capabilities of the Obsidian API.",
-	"author": "Obsidian",
-	"authorUrl": "https://obsidian.md",
-	"fundingUrl": "https://obsidian.md/pricing",
+	"description": "Track your writing progress with TrackBear directly from Obsidian.",
+	"author": "meadow",
+	"authorUrl": "https://meadow.cafe/",
 	"isDesktopOnly": false
 }

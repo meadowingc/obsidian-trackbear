@@ -1,8 +1,28 @@
-/*
+.trackbear-project-list {
+	display: flex;
+	flex-direction: column;
+	gap: 8px;
+	margin-top: 16px;
+}
 
-This CSS file will be included with your plugin, and
-available in the app when your plugin is enabled.
+.trackbear-project-item {
+	padding: 12px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
 
-If your plugin does not need CSS, delete this file.
+.trackbear-project-item:hover {
+	background-color: var(--background-modifier-hover);
+}
 
-*/
+.trackbear-project-title {
+	font-weight: 600;
+	margin-bottom: 4px;
+}
+
+.trackbear-project-description {
+	font-size: 0.9em;
+	color: var(--text-muted);
+}
