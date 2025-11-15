@@ -83,3 +83,13 @@ export interface ApiResponse<T> {
 	code?: string;
 	message?: string;
 }
+
+export interface TrackBearFrontmatter {
+	version: number;
+	projectId: number;
+	fileId: string;
+	lastWords?: number;
+	lastDate?: string;
+}
+
+export const TRACKBEAR_SCHEMA_VERSION = 1;

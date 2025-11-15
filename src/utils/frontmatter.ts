@@ -1,63 +1,57 @@
 import { App, TFile } from 'obsidian';
+import { TrackBearFrontmatter, TRACKBEAR_SCHEMA_VERSION } from '../api/types';
 
 /**
- * Gets the TrackBear project ID from a file's frontmatter
+ * Gets the TrackBear configuration from a file's frontmatter
  */
-export function getProjectIdFromFrontmatter(content: string): number | null {
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
-	if (!frontmatterMatch) {
+export async function getTrackBearFromFrontmatter(
+	app: App,
+	file: TFile
+): Promise<TrackBearFrontmatter | null> {
+	const metadata = app.metadataCache.getFileCache(file);
+	if (!metadata?.frontmatter?.trackbear) {
 		return null;
 	}
 
-	const frontmatter = frontmatterMatch[1];
-	const projectIdMatch = frontmatter.match(/trackbear-project-id:\s*(\d+)/);
-	if (!projectIdMatch) {
+	const tb = metadata.frontmatter.trackbear;
+
+	// Validate required fields
+	if (typeof tb.projectId !== 'number' ||
+		typeof tb.fileId !== 'string') {
 		return null;
 	}
 
-	return parseInt(projectIdMatch[1], 10);
+	return {
+		version: tb.version || 1,
+		projectId: tb.projectId,
+		fileId: tb.fileId,
+		lastWords: tb.lastWords,
+		lastDate: tb.lastDate,
+	};
 }
 
 /**
- * Sets the TrackBear project ID in a file's frontmatter
+ * Sets the TrackBear configuration in a file's frontmatter
  */
-export async function setProjectIdInFrontmatter(
+export async function setTrackBearInFrontmatter(
 	app: App,
 	file: TFile,
-	projectId: number
+	trackbearData: TrackBearFrontmatter
 ): Promise<void> {
-	const content = await app.vault.read(file);
-	const frontmatterMatch = content.match(/^---\n([\s\S]*?)\n---/);
+	await app.fileManager.processFrontMatter(file, (frontmatter) => {
+		frontmatter.trackbear = {
+			version: TRACKBEAR_SCHEMA_VERSION,
+			projectId: trackbearData.projectId,
+			fileId: trackbearData.fileId,
+			...(trackbearData.lastWords !== undefined && { lastWords: trackbearData.lastWords }),
+			...(trackbearData.lastDate !== undefined && { lastDate: trackbearData.lastDate }),
+		};
+	});
+}
 
-	let newContent: string;
-
-	if (frontmatterMatch) {
-		// Frontmatter exists, update or add the project ID
-		const frontmatter = frontmatterMatch[1];
-		const hasProjectId = frontmatter.match(/trackbear-project-id:/);
-
-		if (hasProjectId) {
-			// Update existing project ID
-			const updatedFrontmatter = frontmatter.replace(
-				/trackbear-project-id:\s*\d+/,
-				`trackbear-project-id: ${projectId}`
-			);
-			newContent = content.replace(
-				/^---\n[\s\S]*?\n---/,
-				`---\n${updatedFrontmatter}\n---`
-			);
-		} else {
-			// Add project ID to existing frontmatter
-			const updatedFrontmatter = frontmatter + `\ntrackbear-project-id: ${projectId}`;
-			newContent = content.replace(
-				/^---\n[\s\S]*?\n---/,
-				`---\n${updatedFrontmatter}\n---`
-			);
-		}
-	} else {
-		// No frontmatter exists, create it
-		newContent = `---\ntrackbear-project-id: ${projectId}\n---\n${content}`;
-	}
-
-	await app.vault.modify(file, newContent);
+/**
+ * Generates a unique file ID (UUID v4)
+ */
+export function generateFileId(): string {
+	return crypto.randomUUID();
 }

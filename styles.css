@@ -26,3 +26,34 @@
 	font-size: 0.9em;
 	color: var(--text-muted);
 }
+
+.trackbear-option-list {
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	margin-top: 16px;
+}
+
+.trackbear-option-item {
+	padding: 16px;
+	border: 1px solid var(--background-modifier-border);
+	border-radius: 4px;
+	cursor: pointer;
+	transition: background-color 0.2s;
+}
+
+.trackbear-option-item:hover {
+	background-color: var(--background-modifier-hover);
+}
+
+.trackbear-option-title {
+	font-weight: 600;
+	font-size: 1.1em;
+	margin-bottom: 8px;
+}
+
+.trackbear-option-description {
+	font-size: 0.9em;
+	color: var(--text-muted);
+	line-height: 1.4;
+}

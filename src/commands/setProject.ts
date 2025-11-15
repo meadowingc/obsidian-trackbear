@@ -1,8 +1,8 @@
 import { App, Modal, Notice } from 'obsidian';
 import { TrackBearSettings } from '../settings';
 import { TrackBearClient } from '../api/trackbear';
-import { Project } from '../api/types';
-import { setProjectIdInFrontmatter } from '../utils/frontmatter';
+import { Project, TRACKBEAR_SCHEMA_VERSION, TrackBearFrontmatter } from '../api/types';
+import { setTrackBearInFrontmatter, generateFileId } from '../utils/frontmatter';
 
 export async function setProjectForCurrentNote(
 	app: App,
@@ -39,7 +39,12 @@ export async function setProjectForCurrentNote(
 
 		// Show project picker modal
 		new ProjectPickerModal(app, projects, async (selectedProject) => {
-			await setProjectIdInFrontmatter(app, activeFile, selectedProject.id);
+			const trackbearData: TrackBearFrontmatter = {
+				version: TRACKBEAR_SCHEMA_VERSION,
+				projectId: selectedProject.id,
+				fileId: generateFileId(),
+			};
+			await setTrackBearInFrontmatter(app, activeFile, trackbearData);
 			new Notice(`Set TrackBear project: ${selectedProject.title}`);
 		}).open();
 	} catch (error) {

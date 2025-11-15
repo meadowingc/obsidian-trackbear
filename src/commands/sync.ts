@@ -3,7 +3,7 @@ import { TrackBearSettings } from '../settings';
 import { TrackBearClient } from '../api/trackbear';
 import { getWordCount } from '../utils/wordCount';
 import { parseDateFromFilename, getTodayDate } from '../utils/dateUtils';
-import { getProjectIdFromFrontmatter } from '../utils/frontmatter';
+import { getTrackBearFromFrontmatter, setTrackBearInFrontmatter } from '../utils/frontmatter';
 
 export async function syncCurrentNote(
 	app: App,
@@ -36,7 +36,7 @@ export async function syncCurrentNote(
 		if (isJournalNote) {
 			await syncJournalNote(client, settings, activeFile, wordCount);
 		} else {
-			await syncStoryNote(client, activeFile, content, wordCount);
+			await syncStoryNote(client, app, activeFile, content, wordCount);
 		}
 	} catch (error) {
 		new Notice(`Failed to sync: ${error.message}`);
@@ -93,28 +93,40 @@ async function syncJournalNote(
 
 async function syncStoryNote(
 	client: TrackBearClient,
+	app: App,
 	file: TFile,
 	content: string,
 	wordCount: number
 ): Promise<void> {
-	// Get project ID from frontmatter
-	const projectId = getProjectIdFromFrontmatter(content);
-	if (!projectId) {
+	// Get TrackBear config from frontmatter
+	const trackbearData = await getTrackBearFromFrontmatter(app, file);
+	if (!trackbearData) {
 		new Notice('No TrackBear project set. Use "Set TrackBear Project" command first');
 		return;
 	}
 
-	// Create tally with today's date
 	const date = getTodayDate();
+	const lastWords = trackbearData.lastWords || 0;
+
+	// Calculate delta
+	const delta = wordCount - lastWords;
+
+	// Always create new tally with delta (don't update existing tallies)
+	// This ensures each sync adds to the project total correctly
 	await client.createTally({
 		date,
 		measure: 'word',
-		count: wordCount,
-		note: '',
-		workId: projectId,
-		setTotal: true,
+		count: delta,
+		note: `${file.basename}||file:${trackbearData.fileId}`,
+		workId: trackbearData.projectId,
+		setTotal: false,
 		tags: [],
 	});
 
-	new Notice(`✓ Synced ${file.basename}: ${wordCount.toLocaleString()} words`);
+	new Notice(`✓ Synced ${file.basename}: ${delta >= 0 ? '+' : ''}${delta.toLocaleString()} words (${wordCount.toLocaleString()} total)`);
+
+	// Update frontmatter with new sync info
+	trackbearData.lastWords = wordCount;
+	trackbearData.lastDate = date;
+	await setTrackBearInFrontmatter(app, file, trackbearData);
 }

@@ -75,4 +75,16 @@ export class TrackBearClient {
 			body: JSON.stringify(data),
 		});
 	}
+
+	async findTallyByFileAndDate(
+		projectId: number,
+		fileId: string,
+		date: string
+	): Promise<Tally | null> {
+		const tallies = await this.listTallies(projectId, date);
+		return tallies.find(t =>
+			t.note?.includes(`file:${fileId}`) &&
+			t.date === date
+		) || null;
+	}
 }
