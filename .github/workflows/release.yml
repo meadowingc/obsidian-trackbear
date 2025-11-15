@@ -1,0 +1,57 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install jq
+        run: sudo apt-get update && sudo apt-get install -y jq
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build plugin
+        run: npm run build
+
+      - name: Validate tag and sync manifest version
+        env:
+          TAG: ${{ github.ref_name }}
+        run: |
+          if [[ "$TAG" == v* ]]; then
+            echo "Please tag without 'v' prefix (use 1.0.1 or 1.0.1-beta.0)."
+            exit 1
+          fi
+          if [ ! -f main.js ]; then
+            echo "Build did not produce main.js"; exit 1;
+          fi
+          jq --arg v "$TAG" '.version = $v' manifest.json > manifest.release.json
+          mv manifest.release.json manifest.json
+          echo "Synced manifest.json version to $TAG"
+
+      - name: Create GitHub release and upload assets
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: ${{ github.ref_name }}
+          prerelease: ${{ contains(github.ref_name, '-') }}
+          files: |
+            manifest.json
+            main.js
+            styles.css
+          fail_on_unmatched_files: false
