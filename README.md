@@ -1,94 +1,126 @@
-# Obsidian Sample Plugin
+# TrackBear for Obsidian
 
-This is a sample plugin for Obsidian (https://obsidian.md).
+Track your writing progress with [TrackBear](https://trackbear.app) directly from Obsidian.
 
-This project uses TypeScript to provide type checking and documentation.
-The repo depends on the latest plugin API (obsidian.d.ts) in TypeScript Definition format, which contains TSDoc comments describing what it does.
+## Features
 
-This sample plugin demonstrates some of the basic functionality the plugin API can do.
-- Adds a ribbon icon, which shows a Notice when clicked.
-- Adds a command "Open Sample Modal" which opens a Modal.
-- Adds a plugin setting tab to the settings page.
-- Registers a global click event and output 'click' to the console.
-- Registers a global interval which logs 'setInterval' to the console.
+- **Sync Journal Notes**: Automatically track your daily writing in a dedicated morning pages/journal project
+- **Sync Notes**: Track individual story/project word counts
+- **Smart Updates**: For journal notes, updates existing tallies instead of creating duplicates
+- **Flexible Configuration**: Customize journal folder paths and date formats
 
-## First time developing plugins?
+## Installation
 
-Quick starting guide for new plugin devs:
+The recommended way to install this plugin is through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
 
-- Check if [someone already developed a plugin for what you want](https://obsidian.md/plugins)! There might be an existing plugin similar enough that you can partner up with.
-- Make a copy of this repo as a template with the "Use this template" button (login to GitHub if you don't see it).
-- Clone your repo to a local development folder. For convenience, you can place this folder in your `.obsidian/plugins/your-plugin-name` folder.
-- Install NodeJS, then run `npm i` in the command line under your repo folder.
-- Run `npm run dev` to compile your plugin from `main.ts` to `main.js`.
-- Make changes to `main.ts` (or create new `.ts` files). Those changes should be automatically compiled into `main.js`.
-- Reload Obsidian to load the new version of your plugin.
-- Enable plugin in settings window.
-- For updates to the Obsidian API run `npm update` in the command line under your repo folder.
+### Manual Installation
 
-## Releasing new releases
+1. Download `main.js`, `manifest.json`, and `styles.css` from the latest release
+2. Create a folder in your vault: `<vault>/.obsidian/plugins/obsidian-trackbear/`
+3. Copy the downloaded files into this folder
+4. Reload Obsidian
+5. Enable the plugin in Settings → Community plugins
 
-- Update your `manifest.json` with your new version number, such as `1.0.1`, and the minimum Obsidian version required for your latest release.
-- Update your `versions.json` file with `"new-plugin-version": "minimum-obsidian-version"` so older versions of Obsidian can download an older version of your plugin that's compatible.
-- Create new GitHub release using your new version number as the "Tag version". Use the exact version number, don't include a prefix `v`. See here for an example: https://github.com/obsidianmd/obsidian-sample-plugin/releases
-- Upload the files `manifest.json`, `main.js`, `styles.css` as binary attachments. Note: The manifest.json file must be in two places, first the root path of your repository and also in the release.
-- Publish the release.
+## Setup
 
-> You can simplify the version bump process by running `npm version patch`, `npm version minor` or `npm version major` after updating `minAppVersion` manually in `manifest.json`.
-> The command will bump version in `manifest.json` and `package.json`, and add the entry for the new version to `versions.json`
+1. Get your TrackBear API key from the [TrackBear website](https://trackbear.app)
+2. Open Obsidian Settings → TrackBear
+3. Enter your API key
+4. Configure journal tracking settings:
+   - **Morning Pages Project ID**: The project ID from TrackBear for your daily journal entries
+   - **Journal Folder Path**: Path to your journal notes (e.g., "Journal")
+   - **Journal Date Format**: How dates appear in your journal filenames (e.g., "YYYY-MM-DD")
 
-## Adding your plugin to the community plugin list
+## Usage
 
-- Check the [plugin guidelines](https://docs.obsidian.md/Plugins/Releasing/Plugin+guidelines).
-- Publish an initial version.
-- Make sure you have a `README.md` file in the root of your repo.
-- Make a pull request at https://github.com/obsidianmd/obsidian-releases to add your plugin.
+### Syncing Journal Notes
 
-## How to use
+1. Open a journal note in your configured journal folder
+2. Open the command palette (Ctrl/Cmd + P)
+3. Run: **TrackBear: Sync Current Note**
+4. The plugin will:
+   - Parse the date from the filename
+   - Count words in the note
+   - Update or create a tally in your Morning Pages project
 
-- Clone this repo.
-- Make sure your NodeJS is at least v16 (`node --version`).
-- `npm i` or `yarn` to install dependencies.
-- `npm run dev` to start compilation in watch mode.
+### Syncing Story Notes
 
-## Manually installing the plugin
+1. Open a story note
+2. First time: Run **TrackBear: Set TrackBear Project** to link the note to a TrackBear project
+3. Run **TrackBear: Sync Current Note** to sync word count
+4. The project association is stored in the note's frontmatter and survives file renames
 
-- Copy over `main.js`, `styles.css`, `manifest.json` to your vault `VaultFolder/.obsidian/plugins/your-plugin-id/`.
+## Settings
 
-## Improve code quality with eslint (optional)
-- [ESLint](https://eslint.org/) is a tool that analyzes your code to quickly find problems. You can run ESLint against your plugin to find common bugs and ways to improve your code. 
-- To use eslint with this project, make sure to install eslint from terminal:
-  - `npm install -g eslint`
-- To use eslint to analyze this project use this command:
-  - `eslint main.ts`
-  - eslint will then create a report with suggestions for code improvement by file and line number.
-- If your source code is in a folder, such as `src`, you can use eslint with this command to analyze all files in that folder:
-  - `eslint ./src/`
+### API Key
+Your TrackBear API key (required)
 
-## Funding URL
+### Enable Journal Tracking
+Toggle to enable/disable automatic journal note detection
 
-You can include funding URLs where people who use your plugin can financially support it.
+### Morning Pages Project ID
+The numeric project ID from TrackBear for your journal entries. You can find this in the TrackBear web app.
 
-The simple way is to set the `fundingUrl` field to your link in your `manifest.json` file:
+### Journal Folder Path
+The folder containing your journal notes (e.g., "Journal" or "Daily Notes")
 
-```json
-{
-    "fundingUrl": "https://buymeacoffee.com"
-}
-```
+### Journal Date Format
+How dates appear in your journal filenames. Supported tokens:
+- `YYYY` - 4-digit year
+- `MM` - 2-digit month
+- `DD` - 2-digit day
 
-If you have multiple URLs, you can also do:
+Examples:
+- `YYYY-MM-DD` matches "2024-01-15.md"
+- `DD.MM.YYYY` matches "15.01.2024.md"
+- `YYYY_MM_DD` matches "2024_01_15.md"
 
-```json
-{
-    "fundingUrl": {
-        "Buy Me a Coffee": "https://buymeacoffee.com",
-        "GitHub Sponsor": "https://github.com/sponsors",
-        "Patreon": "https://www.patreon.com/"
-    }
-}
-```
+## How It Works
 
-## API Documentation
+### Journal Notes
 
-See https://github.com/obsidianmd/obsidian-api
+For notes in your journal folder:
+1. The plugin parses the date from the filename
+2. Counts words (excluding frontmatter, code blocks, etc.)
+3. Checks if a tally exists for that date
+4. Updates existing tally or creates a new one
+
+### Story Notes
+
+For all other notes:
+1. Reads the TrackBear project ID from frontmatter (`trackbear-project-id: 123`)
+2. Counts words
+3. Creates a new tally with today's date using `setTotal: true` (sets the project total to this count)
+
+## Privacy & Security
+
+- Your API key is stored locally in Obsidian
+- All API requests go directly to TrackBear's servers
+- Your actual note content is never sent to TrackBear or any third party
+- The plugin is open source and can be audited
+
+## Troubleshooting
+
+**"Please set your TrackBear API key in settings"**
+- Open Settings → TrackBear and enter your API key
+
+**"Could not parse date from filename"**
+- Check that your journal date format setting matches your filename format
+- Ensure your filenames contain a complete date (year, month, day)
+
+**"No TrackBear project set"**
+- Run the "Set TrackBear Project" command first for story notes
+- Journal notes don't need this - they use the Morning Pages project ID from settings
+
+**"Please set your Morning Pages project ID in settings"**
+- Enter the numeric project ID from TrackBear in the settings
+- You can find this in the TrackBear web app URL when viewing the project
+
+## Support
+
+- For TrackBear API documentation: https://help.trackbear.app/api/
+- For plugin issues: [GitHub Issues](https://github.com/meadowingc/obsidian-trackbear/issues)
+
+## License
+
+MIT
