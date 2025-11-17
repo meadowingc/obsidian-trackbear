@@ -57,3 +57,14 @@
 	color: var(--text-muted);
 	line-height: 1.4;
 }
+
+.trackbear-button-container {
+	display: flex;
+	justify-content: flex-end;
+	gap: 8px;
+	margin-top: 16px;
+}
+
+.trackbear-button-container button {
+	padding: 8px 16px;
+}

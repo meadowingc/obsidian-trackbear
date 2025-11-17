@@ -40,11 +40,9 @@ export class TrackBearSettingTab extends PluginSettingTab {
 
 		containerEl.empty();
 
-		containerEl.createEl('h2', { text: 'TrackBear Settings' });
-
 		// API Key
 		new Setting(containerEl)
-			.setName('API Key')
+			.setName('API key')
 			.setDesc('Your TrackBear API key. Get it from the TrackBear website.')
 			.addText(text => text
 				.setPlaceholder('Enter your API key')
@@ -61,10 +59,12 @@ export class TrackBearSettingTab extends PluginSettingTab {
 			});
 
 		// Journal Tracking Section
-		containerEl.createEl('h3', { text: 'Journal/Daily Notes Tracking' });
+		new Setting(containerEl)
+			.setName('Journal/daily notes')
+			.setHeading();
 
 		new Setting(containerEl)
-			.setName('Enable Journal Tracking')
+			.setName('Enable journal tracking')
 			.setDesc('Track journal/daily notes automatically')
 			.addToggle(toggle => toggle
 				.setValue(this.plugin.settings.enableJournalTracking)
@@ -82,7 +82,7 @@ export class TrackBearSettingTab extends PluginSettingTab {
 
 			// Project selection
 			const projectSetting = new Setting(containerEl)
-				.setName('Morning Pages Project')
+				.setName('Morning pages project')
 				.setDesc('Select the TrackBear project for your journal/morning pages');
 
 			if (this.projectsLoading) {
@@ -143,7 +143,7 @@ export class TrackBearSettingTab extends PluginSettingTab {
 			}
 
 			new Setting(containerEl)
-				.setName('Journal Folder Path')
+				.setName('Journal folder path')
 				.setDesc('Path to your journal notes folder (e.g., "Journal")')
 				.addText(text => text
 					.setPlaceholder('Journal')
@@ -154,7 +154,7 @@ export class TrackBearSettingTab extends PluginSettingTab {
 					}));
 
 			new Setting(containerEl)
-				.setName('Journal Date Format')
+				.setName('Journal date format')
 				.setDesc('Date format in your journal filenames. Supported: YYYY, MM, DD (e.g., "YYYY-MM-DD" for "2024-01-15.md")')
 				.addText(text => text
 					.setPlaceholder('YYYY-MM-DD')

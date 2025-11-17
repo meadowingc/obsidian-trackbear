@@ -13,7 +13,7 @@ export default class TrackBearPlugin extends Plugin {
 		// Add sync command
 		this.addCommand({
 			id: 'trackbear-sync',
-			name: 'Sync Current Note',
+			name: 'Sync current note',
 			callback: async () => {
 				await syncCurrentNote(this.app, this.settings);
 			}
@@ -22,7 +22,7 @@ export default class TrackBearPlugin extends Plugin {
 		// Add set project command
 		this.addCommand({
 			id: 'trackbear-set-project',
-			name: 'Set TrackBear Project',
+			name: 'Set TrackBear project',
 			callback: async () => {
 				await setProjectForCurrentNote(this.app, this.settings);
 			}

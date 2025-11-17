@@ -91,7 +91,7 @@ class ProjectPickerModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: 'Select TrackBear Project' });
+		contentEl.createEl('h2', { text: 'Select TrackBear project' });
 
 		const projectList = contentEl.createDiv({ cls: 'trackbear-project-list' });
 
@@ -136,7 +136,7 @@ class ConfirmProjectChangeModal extends Modal {
 		const { contentEl } = this;
 		contentEl.empty();
 
-		contentEl.createEl('h2', { text: 'Change TrackBear Project?' });
+		contentEl.createEl('h2', { text: 'Change TrackBear project?' });
 
 		contentEl.createEl('p', {
 			text: `This note is already assigned to project: ${this.currentProjectName}`
@@ -146,7 +146,7 @@ class ConfirmProjectChangeModal extends Modal {
 			text: 'Changing the project will preserve your word count tracking data, but the note will be associated with a different project.'
 		});
 
-		const buttonContainer = contentEl.createDiv({ cls: 'modal-button-container' });
+		const buttonContainer = contentEl.createDiv({ cls: 'trackbear-button-container' });
 
 		const cancelButton = buttonContainer.createEl('button', { text: 'Cancel' });
 		cancelButton.addEventListener('click', () => {
@@ -154,7 +154,7 @@ class ConfirmProjectChangeModal extends Modal {
 		});
 
 		const confirmButton = buttonContainer.createEl('button', {
-			text: 'Change Project',
+			text: 'Change project',
 			cls: 'mod-cta'
 		});
 		confirmButton.addEventListener('click', () => {
