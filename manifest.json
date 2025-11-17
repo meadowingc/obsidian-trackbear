@@ -1,9 +1,9 @@
 {
-	"id": "unofficial-obsidian-trackbear-sync",
+	"id": "unofficial-trackbear-sync",
 	"name": "Unofficial TrackBear Sync",
 	"version": "1.2.0",
 	"minAppVersion": "0.15.0",
-	"description": "Track your writing progress with TrackBear directly from Obsidian.",
+	"description": "Track your writing progress with TrackBear.",
 	"author": "meadow",
 	"authorUrl": "https://meadow.cafe/",
 	"isDesktopOnly": false
