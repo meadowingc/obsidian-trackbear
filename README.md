@@ -1,175 +1,101 @@
-# Unofficial TrackBear for Obsidian
+# TrackBear for Obsidian
 
-Track your writing progress with [TrackBear](https://trackbear.app) directly from Obsidian.
+Connect your Obsidian writing to [TrackBear](https://trackbear.app) and track your progress without leaving your vault. Great for morning pages, novels, blog posts, or any writing project you want to keep tabs on.
 
-## Features
+## What it does
 
-- **Sync Journal Notes**: Automatically track your daily writing in a dedicated morning pages/journal project
-- **Sync Project Notes**: Track word counts across single or multiple files for any project
-- **Smart Delta Tracking**: Accurately tracks changes, additions, and deletions
-- **File Identification**: Each file gets a unique ID that survives renames
-- **Flexible Configuration**: Customize journal folder paths and date formats
+The plugin handles two types of writing:
+
+**Daily journaling** - If you do morning pages or daily notes, it can automatically sync your word counts to a dedicated TrackBear project. Just write in your journal folder and sync when you're done.
+
+**Writing projects** - Working on a novel, essay, or blog post? Link any note (or group of notes) to a TrackBear project and track your progress over time.
+
+The cool part: it tracks *changes*, not just totals. Write 500 more words? It adds 500. Delete a paragraph? It subtracts those words. Rename a file? It still knows what project it belongs to. This means you can track a single long document or split your novel across multiple chapter files - either way works.
 
 ## Installation
 
-The recommended way to install this plugin is through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
+Easiest way: Install through [BRAT](https://github.com/TfTHacker/obsidian42-brat).
 
-### Manual Installation
-
-1. Download `main.js`, `manifest.json`, and `styles.css` from the latest release
-2. Create a folder in your vault: `<vault>/.obsidian/plugins/obsidian-trackbear/`
-3. Copy the downloaded files into this folder
-4. Reload Obsidian
+Or manually:
+1. Download `main.js`, `manifest.json`, and `styles.css` from the [latest release](https://github.com/meadowingc/obsidian-trackbear/releases)
+2. Create folder: `<vault>/.obsidian/plugins/obsidian-trackbear/`
+3. Drop the files in there
+4. Restart Obsidian
 5. Enable the plugin in Settings → Community plugins
 
 ## Setup
 
-1. Get your TrackBear API key from the [TrackBear website](https://trackbear.app)
-2. Open Obsidian Settings → TrackBear
-3. Enter your API key
-4. (Optional) Configure journal tracking settings:
-   - **Morning Pages Project ID**: The project ID from TrackBear for your daily journal entries
-   - **Journal Folder Path**: Path to your journal notes (e.g., "Journal")
-   - **Journal Date Format**: How dates appear in your journal filenames (e.g., "YYYY-MM-DD")
+You'll need your TrackBear API key first. Grab it from [trackbear.app](https://trackbear.app), then:
 
-## Usage
+1. Open Obsidian Settings → TrackBear
+2. Paste in your API key
+3. That's it for basic use!
 
-### Syncing Project Notes
+**Optional - For journal tracking:**
+- Add your Morning Pages project ID from TrackBear
+- Tell the plugin where your journal notes live (e.g., "Journal")
+- Set your date format (how dates appear in filenames, like "YYYY-MM-DD")
 
-1. Open a note you want to track
-2. First time: Run **TrackBear: Set TrackBear Project** to link the note to a TrackBear project
-3. Run **TrackBear: Sync Current Note** to sync word count
-4. The plugin tracks changes intelligently:
-   - First sync: Adds all words to project
-   - Subsequent syncs: Only adds/subtracts the difference (delta)
-   - Works for both single-file and multi-file projects!
+## How to use it
 
-**Example - Single File Project:**
-```
-Day 1: File has 1000 words → Adds 1000 words → Project: 1000
-Day 2: File has 1500 words → Adds 500 words → Project: 1500
-Day 3: File has 1450 words → Subtracts 50 words → Project: 1450
-```
+### Tracking a writing project
 
-**Example - Multi-File Project:**
-```
-Day 1: chapter-1.md (500 words) → Adds 500 → Project: 500
-Day 1: chapter-2.md (300 words) → Adds 300 → Project: 800
-Day 2: Edit chapter-1.md (550 words) → Adds 50 → Project: 850
-```
+First time with a note:
+1. Open the note
+2. Run command: **TrackBear: Set TrackBear Project**
+3. Pick your project from the list
 
-### Syncing Journal Notes
+Then whenever you write:
+1. Run command: **TrackBear: Sync Current Note**
+2. Done - the change gets added to your project
 
-1. Open a journal note in your configured journal folder
-2. Run **TrackBear: Sync Current Note**
-3. The plugin will:
-   - Parse the date from the filename
-   - Count words in the note
-   - Update or create a tally in your Morning Pages project
+**Example:** You're writing a novel across chapter files. First time you sync chapter-1.md (1000 words), TrackBear shows 1000 total. Next day you sync chapter-2.md (800 words), now it shows 1800. Then you go back and edit chapter-1 to 1100 words - it only adds the 100 word difference. Your project total stays accurate.
 
-## How It Works
+### Tracking daily notes
 
-### Project Notes (Delta Tracking)
+If you've set up journal tracking:
+1. Open today's journal note
+2. Run command: **TrackBear: Sync Current Note**
+3. It figures out the date from your filename and updates that day's count
 
-The plugin uses intelligent delta tracking:
-1. Stores the file's last word count in frontmatter
-2. Calculates the difference (delta) on each sync
-3. Creates a tally with only the change
-4. TrackBear accumulates all tallies to show project progress
+## Under the hood
 
-This means:
-- ✅ Works perfectly for single-file projects (novels, essays)
-- ✅ Works perfectly for multi-file projects (blog posts, multi-chapter stories)
-- ✅ Tracks deletions correctly (negative deltas)
-- ✅ Survives file renames (uses unique file IDs)
-
-### Journal Notes
-
-For notes in your journal folder:
-1. Parses the date from the filename
-2. Counts words (excluding frontmatter, code blocks, etc.)
-3. Updates existing tally for that date or creates a new one
-
-## Frontmatter
-
-The plugin stores tracking information in your notes' frontmatter:
+The plugin stores a bit of info in your note's frontmatter to make the tracking work:
 
 ```yaml
 ---
 trackbear:
-  version: 1
   projectId: 123
-  fileId: 550e8400-e29b-41d4-a716-446655440000
+  fileId: abc-123-def
   lastWords: 1500
   lastDate: 2025-11-15
 ---
 ```
 
-- **version**: Schema version (for future compatibility)
-- **projectId**: Your TrackBear project ID
-- **fileId**: Unique identifier for this file (survives renames)
-- **lastWords**: Word count from last sync (used to calculate delta)
-- **lastDate**: Date of last sync
+This tracks which project the note belongs to, gives it a unique ID (survives renames), and remembers the last word count so it can calculate changes. Your actual note content never gets sent anywhere - only word counts.
 
-## Settings
+## Common issues
 
-### API Key
-Your TrackBear API key (required)
+**"Please set your TrackBear API key"**  
+Add your API key in Settings → TrackBear
 
-### Enable Journal Tracking
-Toggle to enable/disable automatic journal note detection
+**"No TrackBear project set"**  
+Run "Set TrackBear Project" command first (journal notes use the Morning Pages ID from settings instead)
 
-### Morning Pages Project ID
-The numeric project ID from TrackBear for your journal entries. You can find this in the TrackBear web app.
+**"Could not parse date from filename"**  
+Your journal date format setting needs to match your filename format. If your files are named "2024-01-15.md", use format "YYYY-MM-DD"
 
-### Journal Folder Path
-The folder containing your journal notes (e.g., "Journal" or "Daily Notes")
+**Project total seems off**  
+The first sync adds all existing words. After that, only changes get added/subtracted. If something looks wrong, check the TrackBear web app to see the individual tallies.
 
-### Journal Date Format
-How dates appear in your journal filenames. Supported tokens:
-- `YYYY` - 4-digit year
-- `MM` - 2-digit month
-- `DD` - 2-digit day
+## Privacy stuff
 
-Examples:
-- `YYYY-MM-DD` matches "2024-01-15.md"
-- `DD.MM.YYYY` matches "15.01.2024.md"
-- `YYYY_MM_DD` matches "2024_01_15.md"
-
-## Privacy & Security
-
-- Your API key is stored locally in Obsidian
-- All API requests go directly to TrackBear's servers
-- Your actual note content is never sent to TrackBear or any third party
-- Only word counts and file metadata are transmitted
-- The plugin is open source and can be audited
-
-## Troubleshooting
-
-**"Please set your TrackBear API key in settings"**
-- Open Settings → TrackBear and enter your API key
-
-**"Could not parse date from filename"**
-- Check that your journal date format setting matches your filename format
-- Ensure your filenames contain a complete date (year, month, day)
-
-**"No TrackBear project set"**
-- Run the "Set TrackBear Project" command first for project notes
-- Journal notes don't need this - they use the Morning Pages project ID from settings
-
-**"Please set your Morning Pages project ID in settings"**
-- Enter the numeric project ID from TrackBear in the settings
-- You can find this in the TrackBear web app URL when viewing the project
-
-**Project total seems wrong**
-- The plugin uses delta tracking, so it accurately reflects changes
-- If you imported existing content, the first sync will add all words
-- Subsequent syncs only add/subtract changes
+Your API key stays local in Obsidian. The plugin only sends word counts and metadata to TrackBear - never your actual writing. It's open source, so you can check the code yourself.
 
 ## Support
 
-- For TrackBear API documentation: https://help.trackbear.app/api/
-- For plugin issues: [GitHub Issues](https://github.com/meadowingc/obsidian-trackbear/issues)
+- Plugin issues: [GitHub Issues](https://github.com/meadowingc/obsidian-trackbear/issues)
+- TrackBear API docs: https://help.trackbear.app/api/
 
 ## License
 
