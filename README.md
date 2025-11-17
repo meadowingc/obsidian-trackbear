@@ -1,4 +1,4 @@
-# TrackBear for Obsidian
+# (Unofficial) TrackBear plugin for Obsidian 
 
 Connect your Obsidian writing to [TrackBear](https://trackbear.app) and track your progress without leaving your vault. Great for morning pages, blog posts, or any writing project you want to keep tabs on.
 
