@@ -2,6 +2,9 @@
 
 Connect your Obsidian writing to [TrackBear](https://trackbear.app) and track your progress without leaving your vault. Great for morning pages, blog posts, or any writing project you want to keep tabs on.
 
+Here's an example of me tracking a brand new file, synching it, and then showing how the number of words shows up on the TrackBear dashboard.
+
+<video src="https://github.com/user-attachments/assets/36a50915-d1da-466d-ad5c-7200d630c222" controls width="100%"></video>
 
 
 ## What it does
@@ -40,6 +43,8 @@ You'll need your TrackBear API key first. Grab it from [trackbear.app](https://t
 ## How to use it
 
 ### Tracking a writing project
+
+(Note: the video above shows this scenario, where you have multiple files contributing to a single project)
 
 First time with a note:
 1. Open the note
