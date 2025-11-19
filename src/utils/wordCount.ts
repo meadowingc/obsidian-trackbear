@@ -1,22 +1,14 @@
-import { App, TFile, MarkdownView, Notice } from 'obsidian';
+import { App, TFile } from 'obsidian';
 
 /**
  * Gets the word count for the active file.
- * Requires the file to be open in an editor.
+ * Reads content directly from the file to ensure consistency.
  */
-export function getWordCount(app: App, file: TFile): number {
-	// Get the active markdown view
-	const activeView = app.workspace.getActiveViewOfType(MarkdownView);
-
-	if (!activeView || activeView.file?.path !== file.path || !activeView.editor) {
-		new Notice('Please open the file in an editor to count words');
-		throw new Error('File must be open in an editor to count words');
-	}
-
-	// Use the editor's content
-	const content = activeView.editor.getValue();
+export async function getWordCount(app: App, file: TFile): Promise<number> {
+	const content = await app.vault.read(file);
 	return countWords(content);
 }
+
 
 /**
  * Counts words in markdown text, excluding code blocks and formatting.

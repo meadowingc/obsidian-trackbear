@@ -82,6 +82,10 @@ export interface ApiResponse<T> {
 	data?: T;
 	code?: string;
 	message?: string;
+	error?: {
+		code?: string;
+		message?: string;
+	};
 }
 
 export interface TrackBearFrontmatter {

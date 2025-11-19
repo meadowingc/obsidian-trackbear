@@ -11,7 +11,7 @@ export async function syncCurrentNote(
 ): Promise<void> {
 	// Validate API key
 	if (!settings.apiKey) {
-		new Notice('Please set your TrackBear API key in settings');
+		new Notice('Set your TrackBear API key in settings');
 		return;
 	}
 
@@ -24,7 +24,7 @@ export async function syncCurrentNote(
 
 	// Get file content and count words
 	const content = await app.vault.read(activeFile);
-	const wordCount = getWordCount(app, activeFile);
+	const wordCount = await getWordCount(app, activeFile);
 
 	// Determine if it's a journal note or story note
 	const isJournalNote = settings.enableJournalTracking &&
@@ -52,7 +52,7 @@ async function syncJournalNote(
 ): Promise<void> {
 	// Validate journal project ID
 	if (!settings.journalProjectId) {
-		new Notice('Please set your Morning Pages project ID in settings');
+		new Notice('Set your morning pages project ID in settings');
 		return;
 	}
 
@@ -99,9 +99,9 @@ async function syncStoryNote(
 	wordCount: number
 ): Promise<void> {
 	// Get TrackBear config from frontmatter
-	const trackbearData = await getTrackBearFromFrontmatter(app, file);
+	const trackbearData = getTrackBearFromFrontmatter(app, file);
 	if (!trackbearData) {
-		new Notice('No TrackBear project set. Use "Set TrackBear Project" command first');
+		new Notice('No TrackBear project set. Use "Set TrackBear project" command first');
 		return;
 	}
 

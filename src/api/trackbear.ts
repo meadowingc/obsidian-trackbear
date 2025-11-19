@@ -1,5 +1,5 @@
 import { requestUrl } from 'obsidian';
-import { Project, Tally, CreateTallyRequest, UpdateTallyRequest } from './types';
+import { Project, Tally, CreateTallyRequest, UpdateTallyRequest, ApiResponse } from './types';
 
 export class TrackBearClient {
 	private apiKey: string;
@@ -31,7 +31,7 @@ export class TrackBearClient {
 				throw: false, // Don't throw on non-2xx status codes
 			});
 
-			const data: any = response.json;
+			const data = response.json as ApiResponse<T>;
 
 			if (!data.success) {
 				// API returns error in different formats

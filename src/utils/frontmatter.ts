@@ -4,10 +4,10 @@ import { TrackBearFrontmatter, TRACKBEAR_SCHEMA_VERSION } from '../api/types';
 /**
  * Gets the TrackBear configuration from a file's frontmatter
  */
-export async function getTrackBearFromFrontmatter(
+export function getTrackBearFromFrontmatter(
 	app: App,
 	file: TFile
-): Promise<TrackBearFrontmatter | null> {
+): TrackBearFrontmatter | null {
 	const metadata = app.metadataCache.getFileCache(file);
 	if (!metadata?.frontmatter?.trackbear) {
 		return null;

@@ -10,7 +10,7 @@ export async function setProjectForCurrentNote(
 ): Promise<void> {
 	// Validate API key
 	if (!settings.apiKey) {
-		new Notice('Please set your TrackBear API key in settings');
+		new Notice('Set your TrackBear API key in settings');
 		return;
 	}
 
@@ -24,19 +24,19 @@ export async function setProjectForCurrentNote(
 	// Don't allow setting project for journal notes
 	if (settings.enableJournalTracking &&
 		activeFile.path.startsWith(settings.journalFolderPath)) {
-		new Notice('Journal notes use the Morning Pages project from settings');
+		new Notice('Journal notes use the morning pages project from settings');
 		return;
 	}
 
 	// Check if project is already set
-	const existingTrackBear = await getTrackBearFromFrontmatter(app, activeFile);
+	const existingTrackBear = getTrackBearFromFrontmatter(app, activeFile);
 
 	// Fetch projects
 	const client = new TrackBearClient(settings.apiKey);
 	try {
 		const projects = await client.listProjects();
 		if (projects.length === 0) {
-			new Notice('No projects found. Please create a project in TrackBear first.');
+			new Notice('No projects found. Create a project in TrackBear first.');
 			return;
 		}
 
@@ -47,7 +47,7 @@ export async function setProjectForCurrentNote(
 
 			new ConfirmProjectChangeModal(app, currentProjectName, () => {
 				// User confirmed - show project picker
-				new ProjectPickerModal(app, projects, async (selectedProject) => {
+				new ProjectPickerModal(app, projects, (selectedProject) => {
 					const trackbearData: TrackBearFrontmatter = {
 						version: TRACKBEAR_SCHEMA_VERSION,
 						projectId: selectedProject.id,
@@ -55,19 +55,19 @@ export async function setProjectForCurrentNote(
 						lastWords: existingTrackBear.lastWords,
 						lastDate: existingTrackBear.lastDate,
 					};
-					await setTrackBearInFrontmatter(app, activeFile, trackbearData);
+					void setTrackBearInFrontmatter(app, activeFile, trackbearData);
 					new Notice(`Changed TrackBear project to: ${selectedProject.title}`);
 				}).open();
 			}).open();
 		} else {
 			// No existing project - show project picker directly
-			new ProjectPickerModal(app, projects, async (selectedProject) => {
+			new ProjectPickerModal(app, projects, (selectedProject) => {
 				const trackbearData: TrackBearFrontmatter = {
 					version: TRACKBEAR_SCHEMA_VERSION,
 					projectId: selectedProject.id,
 					fileId: generateFileId(),
 				};
-				await setTrackBearInFrontmatter(app, activeFile, trackbearData);
+				void setTrackBearInFrontmatter(app, activeFile, trackbearData);
 				new Notice(`Set TrackBear project: ${selectedProject.title}`);
 			}).open();
 		}
